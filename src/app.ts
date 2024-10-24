@@ -30,7 +30,6 @@ app.use(
     origin: [
       "http://127.0.0.1:5173",
       "http://localhost:5173",
-      "https://hundred-admin.vercel.app",
     ],
     credentials: true, // Allow sending cookies with the request
   })
