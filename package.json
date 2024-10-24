@@ -16,7 +16,7 @@
   "author": "Sabuj Islam",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sabuj0338/express-rest-boilerplate.git"
+    "url": "https://github.com/sabuj0338/express-auth-rest-boilerplate.git"
   },
   "license": "MIT",
   "dependencies": {
@@ -43,6 +43,7 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.0.3",
     "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
