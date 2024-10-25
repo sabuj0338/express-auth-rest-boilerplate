@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Document, Model } from "mongoose";
 
 export interface IOTP {
   otp: number;
@@ -8,7 +8,7 @@ export interface IOTP {
   blacklisted: boolean;
 }
 
-export type NewOTP = Omit<IOTP, 'blacklisted'>;
+export type NewOTP = Omit<IOTP, "blacklisted">;
 
 export interface IOTPDoc extends IOTP, Document {}
 

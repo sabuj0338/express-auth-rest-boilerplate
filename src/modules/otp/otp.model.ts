@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import otpTypes from './otp.types';
-import toJSON from '../toJSON/toJSON';
-import { IOTPDoc, IOTPModel } from './otp.interfaces';
+import mongoose from "mongoose";
+import otpTypes from "./otp.types";
+import toJSON from "../toJSON/toJSON";
+import { IOTPDoc, IOTPModel } from "./otp.interfaces";
 
 const otpSchema = new mongoose.Schema<IOTPDoc, IOTPModel>(
   {
@@ -12,7 +12,7 @@ const otpSchema = new mongoose.Schema<IOTPDoc, IOTPModel>(
     },
     user: {
       type: String,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     type: {
@@ -31,12 +31,12 @@ const otpSchema = new mongoose.Schema<IOTPDoc, IOTPModel>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // add plugin that converts mongoose to json
 otpSchema.plugin(toJSON);
 
-const OTP = mongoose.model<IOTPDoc, IOTPModel>('OTP', otpSchema);
+const OTP = mongoose.model<IOTPDoc, IOTPModel>("OTP", otpSchema);
 
 export default OTP;

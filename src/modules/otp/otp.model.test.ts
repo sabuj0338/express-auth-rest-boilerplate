@@ -1,27 +1,27 @@
-import { faker } from '@faker-js/faker';
-import moment from 'moment';
-import mongoose from 'mongoose';
-import config from '../../config/config';
-import { NewOTP } from './otp.interfaces';
-import OTP from './otp.model';
-import * as otpService from './otp.service';
-import otpTypes from './otp.types';
+import { faker } from "@faker-js/faker";
+import moment from "moment";
+import mongoose from "mongoose";
+import config from "../../config/config";
+import { NewOTP } from "./otp.interfaces";
+import OTP from "./otp.model";
+import * as otpService from "./otp.service";
+import otpTypes from "./otp.types";
 
-const password = 'password1';
+const password = "password1";
 
 const userOne = {
   _id: new mongoose.Types.ObjectId(),
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'user',
+  role: "user",
   isEmailVerified: false,
 };
 
 const userOneAccessOTP = otpService.generateOTP();
 
-describe('OTP Model', () => {
-  const refreshOTPExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+describe("OTP Model", () => {
+  const refreshOTPExpires = moment().add(config.jwt.refreshExpirationDays, "days");
   let newOTP: NewOTP;
   beforeEach(() => {
     newOTP = {
@@ -32,12 +32,12 @@ describe('OTP Model', () => {
     };
   });
 
-  test('should correctly validate a valid otp', async () => {
+  test("should correctly validate a valid otp", async () => {
     await expect(new OTP(newOTP).validate()).resolves.toBeUndefined();
   });
 
-  test('should throw a validation error if type is unknown', async () => {
-    newOTP.type = 'invalidType';
+  test("should throw a validation error if type is unknown", async () => {
+    newOTP.type = "invalidType";
     await expect(new OTP(newOTP).validate()).rejects.toThrow();
   });
 });
