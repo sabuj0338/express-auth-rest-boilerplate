@@ -1,5 +1,5 @@
 {
-  "name": "hundred-api",
+  "name": "express-auth-rest-boilerplate",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
