@@ -12,8 +12,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "files": [
     "./src/custom.d.ts"

@@ -1,7 +1,7 @@
 import status from "http-status";
 import mongoose from "mongoose";
 import request from "supertest";
-import app from "../src/app";
+import app from "../app";
 
 describe("Auth Routes", () => {
   let server: any;
