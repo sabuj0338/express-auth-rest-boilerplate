@@ -26,8 +26,10 @@ const app: Application = express();
 // HTTP request logger middleware for node.js
 if (env.env === "production") {
   app.use(morgan("combined"));
-} else if (env.env !== "test") {
+} else if (env.env === "development") {
   app.use(morgan("dev"));
+} else if (env.env === "test") {
+  app.use(morgan("tiny"));
 }
 
 // set security HTTP headers
