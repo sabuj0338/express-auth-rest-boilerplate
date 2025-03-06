@@ -1,23 +1,32 @@
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
+import dotenv from "dotenv";
+import express, { Application } from "express";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
-import httpStatus from "http-status";
+import status from "http-status";
+import morgan from "morgan";
 import passport from "passport";
-import config from "./config/config";
-import { jwtStrategy } from "./modules/auth";
-import { ApiError, errorConverter, errorHandler } from "./modules/errors";
-import { morgan } from "./modules/logger";
-import { authLimiter } from "./modules/utils";
-import v1Routes from "./routes/v1";
+import connectDB from "./config/db";
+import env from "./config/env";
+import jwtStrategy from "./config/jwt";
+import { errorConverter, errorHandler } from "./middlewares/error.middleware";
+import authLimiter from "./middlewares/rateLimiter.middleware";
+import routes from "./routes";
+import ApiError from "./utils/ApiError";
 
-const app = express();
+dotenv.config();
 
-if (config.env !== "test") {
-  app.use(morgan.successHandler);
-  app.use(morgan.errorHandler);
+const app: Application = express();
+
+// Middleware
+
+// HTTP request logger middleware for node.js
+if (env.env === "production") {
+  app.use(morgan("combined"));
+} else if (env.env !== "test") {
+  app.use(morgan("dev"));
 }
 
 // set security HTTP headers
@@ -31,7 +40,6 @@ app.use(
     credentials: true, // Allow sending cookies with the request
   }),
 );
-// app.options("*", cors());
 
 // parse json request body
 app.use(express.json());
@@ -47,23 +55,23 @@ app.use(ExpressMongoSanitize());
 app.use(compression());
 
 // parse cookies
-app.use(cookieParser(config.cookie.secret));
+app.use(cookieParser(env.cookie.secret));
 
 // jwt authentication
 app.use(passport.initialize());
 passport.use("jwt", jwtStrategy);
 
 // limit repeated failed requests to auth endpoints
-if (config.env === "production") {
+if (env.env === "production") {
   app.use("/v1/auth", authLimiter);
 }
 
-// all routes
-app.use("/v1", v1Routes);
+// Routes
+app.use("/api", routes);
 
 // send back a 404 error for any unknown api request
 app.use((_req, _res, next) => {
-  next(new ApiError(httpStatus.NOT_FOUND, "Not Found"));
+  next(new ApiError(status.NOT_FOUND, "Not Found"));
 });
 
 // convert error to ApiError, if needed
@@ -71,5 +79,8 @@ app.use(errorConverter);
 
 // handle error
 app.use(errorHandler);
+
+// Database Connection
+connectDB();
 
 export default app;

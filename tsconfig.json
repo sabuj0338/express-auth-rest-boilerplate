@@ -1,18 +1,24 @@
 {
-    "compilerOptions": {
-        "outDir": "./build",
-        "rootDir": "./src",
-        "sourceMap": true,
-        "target": "esnext",
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "noImplicitAny": true,
-        "strict": true,
-        "skipLibCheck": true
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "files": ["./src/custom.d.ts"]
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
+  "files": [
+    "./src/custom.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
