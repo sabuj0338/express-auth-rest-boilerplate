@@ -1,6 +1,5 @@
-import nodemailer from "nodemailer";
 import env from "../config/env";
-import logger from "../utils/logger";
+import { transport } from "../config/smtp";
 
 export interface Message {
   from: string;
@@ -10,27 +9,6 @@ export interface Message {
   html?: string;
 }
 
-export const transport = nodemailer.createTransport(env.email.smtp);
-/* istanbul ignore next */
-if (env.env !== "test") {
-  transport
-    .verify()
-    .then(() => logger.info("Connected to email server"))
-    .catch(() =>
-      logger.info(
-        "Unable to connect to email server. Make sure you have configured the SMTP options in .env"
-      )
-    );
-}
-
-/**
- * Send an email
- * @param {string} to
- * @param {string} subject
- * @param {string} text
- * @param {string} html
- * @returns {Promise<void>}
- */
 export const sendEmail = async (
   to: string,
   subject: string,

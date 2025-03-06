@@ -11,6 +11,7 @@ import passport from "passport";
 import connectDB from "./config/db";
 import env from "./config/env";
 import jwtStrategy from "./config/jwt";
+import connectSMTP from "./config/smtp";
 import { errorConverter, errorHandler } from "./middlewares/error.middleware";
 import authLimiter from "./middlewares/rateLimiter.middleware";
 import routes from "./routes";
@@ -82,5 +83,8 @@ app.use(errorHandler);
 
 // Database Connection
 connectDB();
+
+// SMTP Connection
+connectSMTP();
 
 export default app;
