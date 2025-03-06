@@ -1,6 +1,8 @@
+import status from "http-status";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { IPayload, tokenType } from "../models/token.model";
 import User from "../models/user.model";
+import ApiError from "../utils/ApiError";
 import env from "./env";
 
 const jwtStrategy = new JwtStrategy(
@@ -11,7 +13,7 @@ const jwtStrategy = new JwtStrategy(
   async (payload: IPayload, done) => {
     try {
       if (payload.type !== tokenType.ACCESS) {
-        throw new Error("Invalid token type");
+        throw new ApiError(status.BAD_REQUEST, "Invalid token type");
       }
       const user = await User.findById(payload.sub);
       if (!user) {
@@ -21,7 +23,7 @@ const jwtStrategy = new JwtStrategy(
     } catch (error) {
       done(error, false);
     }
-  },
+  }
 );
 
 export default jwtStrategy;

@@ -5,6 +5,7 @@ import * as emailService from "../services/email.service";
 import * as otpService from "../services/otp.service";
 import * as tokenService from "../services/token.service";
 import * as userService from "../services/user.service";
+import ApiError from "../utils/ApiError";
 import { catchAsync } from "../utils/catchAsync";
 import { successResponse } from "../utils/responseHandler";
 
@@ -39,7 +40,7 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
   
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.getUserByEmail(req.body.email);
-  if (!user) throw new Error("User with this email does not exist");
+  if (!user) throw new ApiError(status.BAD_REQUEST, "User with this email does not exist");
   
   await authService.resetPasswordByOTP(req.body.otp, user.id, req.body.password);
   successResponse(res, "Password updated successfully", status.NO_CONTENT)
@@ -53,7 +54,7 @@ export const sendVerificationEmail = catchAsync(async (req: Request, res: Respon
   
 export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.getUserByEmail(req.user.email);
-  if (!user) throw new Error("User with this email does not exist");
+  if (!user) throw new ApiError(status.BAD_REQUEST, "User with this email does not exist");
   await authService.verifyEmailByOTP(req.body.otp, user.id);
   successResponse(res, "Email verified successfully", status.NO_CONTENT)
 });

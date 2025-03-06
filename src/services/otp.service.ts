@@ -1,25 +1,19 @@
+import status from "http-status";
 import moment, { Moment } from "moment";
 import env from "../config/env";
-import { IOtpDoc, default as OTP, default as Otp, otpType } from "../models/otp.model";
+import {
+  IOtpDoc,
+  default as OTP,
+  default as Otp,
+  otpType,
+} from "../models/otp.model";
 import { IUserDoc } from "../models/user.model";
+import ApiError from "../utils/ApiError";
 import { getUserByEmail } from "./user.service";
 
-/**
- * Generate otp
- * @returns {number}
- */
 export const generateOTP = (): number =>
   Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-/**
- * Save a otp
- * @param {number} otp
- * @param {string} userId
- * @param {Moment} expires
- * @param {string} type
- * @param {boolean} [blacklisted]
- * @returns {Promise<IOtpDoc>}
- */
 export const saveOTP = async (
   otp: number,
   userId: string,
@@ -37,13 +31,6 @@ export const saveOTP = async (
   return doc;
 };
 
-/**
- * Verify otp and return otp doc (or throw an error if it is not valid)
- * @param {number} otp
- * @param {string} type
- * @param {string} userId
- * @returns {Promise<IOtpDoc>}
- */
 export const verifyOTP = async (
   otp: number,
   userId: string,
@@ -56,23 +43,17 @@ export const verifyOTP = async (
     blacklisted: false,
   });
   if (!doc) {
-    throw new Error("Invalid OTP");
+    throw new ApiError(status.BAD_REQUEST, "Invalid OTP");
   }
   return doc;
 };
 
-/**
- * Generate reset password otp
- * @param {string} email
- * @returns {Promise<string>}
- */
 export const generateResetPasswordOTP = async (
   email: string
 ): Promise<number> => {
   const user = await getUserByEmail(email);
   if (!user) {
-    throw new Error("");
-    // throw new ApiError(httpStatus.NO_CONTENT, "");
+    throw new ApiError(status.BAD_REQUEST, "Invalid email");
   }
   const expires = moment().add(
     env.jwt.resetPasswordExpirationMinutes,
@@ -83,18 +64,10 @@ export const generateResetPasswordOTP = async (
   return resetPasswordOTP;
 };
 
-/**
- * Generate verify email token
- * @param {IUserDoc} user
- * @returns {Promise<string>}
- */
 export const generateVerifyEmailOTP = async (
   user: IUserDoc
 ): Promise<number> => {
-  const expires = moment().add(
-    env.jwt.verifyEmailExpirationMinutes,
-    "minutes"
-  );
+  const expires = moment().add(env.jwt.verifyEmailExpirationMinutes, "minutes");
   const verifyEmailOTP = generateOTP();
   await saveOTP(verifyEmailOTP, user.id, expires, otpType.VERIFY_EMAIL);
   return verifyEmailOTP;

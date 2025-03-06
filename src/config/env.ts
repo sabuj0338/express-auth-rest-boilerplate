@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
+import status from "http-status";
 import Joi from "joi";
 import path from "path";
+import ApiError from "../utils/ApiError";
 
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
@@ -41,7 +43,7 @@ const { value: envVars, error } = envVarsSchema
   .validate(process.env);
 
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+  throw new ApiError(status.BAD_REQUEST, `Config validation error: ${error.message}`);
 }
 
 export default {

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import env from "../config/env";
 import { IPayload } from "../models/token.model";
 import User from "../models/user.model";
+import ApiError from "../utils/ApiError";
 import { errorResponse } from "../utils/responseHandler";
 
 const authMiddleware = async (
@@ -13,12 +14,12 @@ const authMiddleware = async (
 ): Promise<void> => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) throw new Error("Access denied. No token provided.");
+    if (!token) throw new ApiError(status.BAD_REQUEST, "Access denied. No token provided.");
 
     const decoded = jwt.verify(token, env.jwt.secret as string) as IPayload;
     
     const user = await User.findById(decoded.sub).select("-password");
-    if (!user) throw new Error("User not found.");
+    if (!user) throw new ApiError(status.BAD_REQUEST, "User not found.");
 
     req.user = user;
     next();

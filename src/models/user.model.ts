@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
+import status from "http-status";
 import mongoose, { Document, Model } from "mongoose";
 import validator from "validator";
+import ApiError from "../utils/ApiError";
 import { paginate, QueryResult } from "../utils/pagination";
 import { toJSON } from "../utils/toJson";
 import { AccessAndRefreshTokens } from "./token.model";
@@ -87,7 +89,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       lowercase: true,
       validate(value: string) {
         if (!validator.isEmail(value)) {
-          throw new Error("Invalid email");
+          throw new ApiError(status.BAD_REQUEST, "Invalid email");
         }
       },
     },
@@ -101,7 +103,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       required: false,
       validate(value: string) {
         if (!validator.isURL(value)) {
-          throw new Error("Invalid image url");
+          throw new ApiError(status.BAD_REQUEST, "Invalid image url");
         }
       },
     },
@@ -112,7 +114,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       minlength: 8,
       validate(value: string) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-          throw new Error(
+          throw new ApiError(status.BAD_REQUEST, 
             "Password must contain at least one letter and one number"
           );
         }

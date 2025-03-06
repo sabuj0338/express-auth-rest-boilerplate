@@ -25,12 +25,6 @@ export const sendEmail = async (
   await transport.sendMail(msg);
 };
 
-/**
- * Send reset password email
- * @param {string} to
- * @param {string} token
- * @returns {Promise<void>}
- */
 export const sendResetPasswordEmail = async (
   to: string,
   token: string
@@ -49,12 +43,6 @@ export const sendResetPasswordEmail = async (
   await sendEmail(to, subject, text, html);
 };
 
-/**
- * Send reset password email
- * @param {string} to
- * @param {number} otp
- * @returns {Promise<void>}
- */
 export const sendResetPasswordEmailByOTP = async (
   to: string,
   otp: number
@@ -72,13 +60,6 @@ export const sendResetPasswordEmailByOTP = async (
   await sendEmail(to, subject, text, html);
 };
 
-/**
- * Send verification email
- * @param {string} to
- * @param {number} otp
- * @param {string} name
- * @returns {Promise<void>}
- */
 export const sendVerificationEmailByOTP = async (
   to: string,
   otp: number,
@@ -95,13 +76,6 @@ export const sendVerificationEmailByOTP = async (
   await sendEmail(to, subject, text, html);
 };
 
-/**
- * Send verification email
- * @param {string} to
- * @param {string} token
- * @param {string} name
- * @returns {Promise<void>}
- */
 export const sendVerificationEmail = async (
   to: string,
   token: string,
@@ -119,13 +93,6 @@ export const sendVerificationEmail = async (
   await sendEmail(to, subject, text, html);
 };
 
-/**
- * Send email verification after registration
- * @param {string} to
- * @param {string} token
- * @param {string} name
- * @returns {Promise<void>}
- */
 export const sendSuccessfulRegistration = async (
   to: string,
   token: string,
@@ -149,12 +116,6 @@ export const sendSuccessfulRegistration = async (
   await sendEmail(to, subject, text, html);
 };
 
-/**
- * Send email verification after registration
- * @param {string} to
- * @param {string} name
- * @returns {Promise<void>}
- */
 export const sendAccountCreated = async (
   to: string,
   name: string

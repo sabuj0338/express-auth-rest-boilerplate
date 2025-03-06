@@ -1,4 +1,6 @@
 import { body } from "express-validator";
+import status from "http-status";
+import ApiError from "../utils/ApiError";
 
 // create validation rules for registration
 export const validateRegistration = [
@@ -30,7 +32,7 @@ export const validateRegistration = [
     .withMessage("Confirm Password is required")
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error("Passwords do not match");
+        throw new ApiError(status.BAD_REQUEST, "Passwords do not match");
       }
       return true;
     }),
