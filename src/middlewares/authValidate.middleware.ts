@@ -87,3 +87,21 @@ export const validateResetPassword = [
 export const validateVerifyEmail = [
   body("otp").notEmpty().withMessage("OTP is required"),
 ];
+
+// auth update validation rules
+export const validateProfileUpdate = [
+  // body("fullName").notEmpty().withMessage("Full Name is required"),
+  body("username")
+    .notEmpty()
+    .withMessage("Username is required")
+    .isLength({ min: 3, max: 30 })
+    .withMessage("Username must be between 3 and 30 characters")
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage(
+      "Username can only contain alphanumeric characters and underscores"
+    ),
+  body("email")
+    .isEmail()
+    .withMessage("Valid email is required")
+    .normalizeEmail(),
+];

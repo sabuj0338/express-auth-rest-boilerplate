@@ -24,7 +24,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   
 export const logout = catchAsync(async (req: Request, res: Response) => {
   await authService.logout(req.body.refreshToken);
-  successResponse(res, "User logged out successfully", status.NO_CONTENT);
+  successResponse(res, "User logged out successfully", status.OK);
 });
   
 export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
@@ -35,7 +35,7 @@ export const refreshTokens = catchAsync(async (req: Request, res: Response) => {
 export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
   const resetPasswordOTP = await otpService.generateResetPasswordOTP(req.body.email);
   await emailService.sendResetPasswordEmailByOTP(req.body.email, resetPasswordOTP);
-  successResponse(res, "OTP sent successfully", status.NO_CONTENT)
+  successResponse(res, "OTP sent successfully", status.OK)
 });
   
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
@@ -43,18 +43,23 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   if (!user) throw new ApiError(status.BAD_REQUEST, "User with this email does not exist");
   
   await authService.resetPasswordByOTP(req.body.otp, user.id, req.body.password);
-  successResponse(res, "Password updated successfully", status.NO_CONTENT)
+  successResponse(res, "Password updated successfully", status.OK)
 });
   
 export const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
   const verifyEmailOTP = await otpService.generateVerifyEmailOTP(req.user);
   await emailService.sendVerificationEmailByOTP(req.user.email, verifyEmailOTP, req.user.username);
-  successResponse(res, "OTP sent successfully", status.NO_CONTENT)
+  successResponse(res, "OTP sent successfully", status.OK)
 });
   
 export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const user = await userService.getUserByEmail(req.user.email);
   if (!user) throw new ApiError(status.BAD_REQUEST, "User with this email does not exist");
   await authService.verifyEmailByOTP(req.body.otp, user.id);
-  successResponse(res, "Email verified successfully", status.NO_CONTENT)
+  successResponse(res, "Email verified successfully", status.OK)
+});
+  
+export const profileUpdate = catchAsync(async (req: Request, res: Response) => {
+  await userService.updateUserById(req.user.id, req.body);
+  successResponse(res, "Profile updated successfully", status.OK)
 });

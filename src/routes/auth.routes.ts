@@ -3,6 +3,7 @@ import {
   forgotPassword,
   login,
   logout,
+  profileUpdate,
   refreshTokens,
   register,
   resetPassword,
@@ -14,6 +15,7 @@ import {
   validateForgotPassword,
   validateLogin,
   validateLogout,
+  validateProfileUpdate,
   validateRefreshToken,
   validateRegistration,
   validateResetPassword,
@@ -58,6 +60,13 @@ router.post(
   validateVerifyEmail,
   validateRequest,
   verifyEmail
+);
+router.put(
+  "/update",
+  authMiddleware,
+  validateProfileUpdate,
+  validateRequest,
+  profileUpdate
 );
 
 export default router;

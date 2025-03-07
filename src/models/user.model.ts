@@ -8,6 +8,8 @@ import { toJSON } from "../utils/toJson";
 import { AccessAndRefreshTokens } from "./token.model";
 
 const allRoles = {
+  postman: [],
+  manager: [],
   customer: [],
   superAdmin: [],
   admin: ["getUsers", "manageUsers"],
@@ -28,10 +30,15 @@ export const roleRights: Map<string, string[]> = new Map(
 );
 
 export interface IUser {
+  userId: number;
   fullName: string;
   username: string;
   avatar: string;
   phone: string;
+  contactNo: string
+  designation: string
+  company: string
+  companyAddress: string
   email: string;
   password: string;
   isEmailVerified: boolean;
@@ -71,6 +78,11 @@ export interface IUserWithTokens {
 
 const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
   {
+    userId: {
+      type: Number,
+      required: false,
+      trim: true,
+    },
     fullName: {
       type: String,
       required: true,
@@ -94,6 +106,26 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       },
     },
     phone: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    contactNo: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    designation: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    company: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    companyAddress: {
       type: String,
       required: false,
       trim: true,
