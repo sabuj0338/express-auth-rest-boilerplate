@@ -9,15 +9,41 @@ import { successResponse } from "../utils/responseHandler";
 
 export const allIncoming = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
-    const filter = pick(req.query, ["name"]);
+    const filter = pick(req.query, ["status"]);
     const options: IOptions = pick(req.query, [
       "sortBy",
       "limit",
       "page",
       "projectBy",
     ]);
-    const incomings = await incomingService.queryIncoming(filter, options);
+
+    const name = req.query.name;
+    let filters = {};
+
+    if (name) {
+      const parseInt = Number.parseInt(name as string, 10);
+      let conditions: any = [
+        { sampleType: { $regex: name, $options: "i" } },
+        { companyName: { $regex: name, $options: "i" } },
+        { receiverName: { $regex: name, $options: "i" } },
+      ];
+      if (!isNaN(parseInt)) {
+        conditions = [...conditions, { userId: { $eq: parseInt } }];
+        filters = { ...filter, $or: conditions };
+      } else {
+        filters = { ...filter, $or: conditions };
+      }
+    }
+
+    const incomings = await incomingService.query(filters, options);
     successResponse(res, "Operation successful", status.OK, incomings);
+  }
+);
+
+export const incomingReports = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const data: object = await incomingService.getReports();
+    successResponse(res, "Operation successful", status.OK, data);
   }
 );
 
@@ -42,7 +68,7 @@ export const mockIncoming = catchAsync(
           status: statues[Math.floor(Math.random() * statues.length)],
         });
       });
-    await incomingService.seedIncoming(data);
+    await incomingService.seed(data);
     successResponse(res, "Operation successful", status.CREATED);
   }
 );

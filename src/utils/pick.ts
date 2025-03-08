@@ -1,8 +1,20 @@
-export const searchPick = (object: Record<string, any>, keys: string[]) =>
+export const pickRegex = (object: Record<string, any>, keys: string[]) =>
   keys.reduce((obj: any, key: string) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
       // eslint-disable-next-line no-param-reassign
       obj[key] = { $regex: object[key], $options: 'i' };
+    }
+    return obj;
+  }, {});
+
+export const pickNumeric = (object: Record<string, any>, keys: string[]) =>
+  keys.reduce((obj: any, key: string) => {
+    if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+      // eslint-disable-next-line no-param-reassign
+      const parse = Number.parseInt(object[key], 10);
+      if(!isNaN(parse)) {
+        obj[key] = { $eq: Number.parseInt(object[key], 10) ?? 0 };
+      }
     }
     return obj;
   }, {});
