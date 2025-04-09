@@ -8,10 +8,8 @@ import helmet from "helmet";
 import status from "http-status";
 import morgan from "morgan";
 import passport from "passport";
-import connectDB from "./config/db";
 import env from "./config/env";
 import jwtStrategy from "./config/jwt";
-import connectSMTP from "./config/smtp";
 import { errorConverter, errorHandler } from "./middlewares/error.middleware";
 import authLimiter from "./middlewares/rateLimiter.middleware";
 import routes from "./routes";
@@ -70,7 +68,7 @@ if (env.env === "production") {
 }
 
 // Routes
-app.use("/api", routes);
+app.use("/v1", routes);
 
 // send back a 404 error for any unknown api request
 app.use((_req, _res, next) => {
@@ -84,9 +82,9 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 // Database Connection
-connectDB();
+// connectMongoDB();
 
 // SMTP Connection
-connectSMTP();
+// connectSMTP();
 
 export default app;

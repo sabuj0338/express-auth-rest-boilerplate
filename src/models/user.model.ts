@@ -5,7 +5,6 @@ import validator from "validator";
 import ApiError from "../utils/ApiError";
 import { paginate, QueryResult } from "../utils/pagination";
 import { toJSON } from "../utils/toJson";
-import { AccessAndRefreshTokens } from "./token.model";
 
 const allRoles = {
   customer: [],
@@ -29,9 +28,9 @@ export const roleRights: Map<string, string[]> = new Map(
 
 export interface IUser {
   fullName: string;
-  username: string;
+  // username: string;
   avatar: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   password: string;
   isEmailVerified: boolean;
@@ -66,7 +65,8 @@ export type CreateNewUser = Omit<
 
 export interface IUserWithTokens {
   user: IUserDoc;
-  tokens: AccessAndRefreshTokens;
+  accessToken: string;
+  refreshToken: string;
 }
 
 const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
@@ -76,11 +76,11 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       required: true,
       trim: true,
     },
-    username: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    // username: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
     email: {
       type: String,
       required: true,
@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
         }
       },
     },
-    phone: {
+    phoneNumber: {
       type: String,
       required: false,
       trim: true,

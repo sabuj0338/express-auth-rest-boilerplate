@@ -2,23 +2,13 @@ import status from "http-status";
 import User, {
   CreateNewUser,
   IUserDoc,
-  RegisterNewUser,
-  UpdateUser,
+  UpdateUser
 } from "../models/user.model";
 import ApiError from "../utils/ApiError";
 import { IOptions, QueryResult } from "../utils/pagination";
 
 export const createUser = async (
   userBody: CreateNewUser
-): Promise<IUserDoc> => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(status.BAD_REQUEST, "Email already taken");
-  }
-  return User.create(userBody);
-};
-
-export const registerUser = async (
-  userBody: RegisterNewUser
 ): Promise<IUserDoc> => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(status.BAD_REQUEST, "User already exists");

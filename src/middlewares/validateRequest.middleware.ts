@@ -7,7 +7,7 @@ import { errorResponse } from "../utils/responseHandler";
  * Middleware to validate request using express-validator.
  * If validation fails, it sends a 422 response with validation errors.
  */
-export const validateRequest = (
+export const vr = (
   req: Request,
   res: Response,
   next: NextFunction

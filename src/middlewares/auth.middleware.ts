@@ -3,11 +3,10 @@ import status from "http-status";
 import jwt from "jsonwebtoken";
 import env from "../config/env";
 import { IPayload } from "../models/token.model";
-import User from "../models/user.model";
 import ApiError from "../utils/ApiError";
 import { errorResponse } from "../utils/responseHandler";
 
-const authMiddleware = async (
+export const acp = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,10 +17,11 @@ const authMiddleware = async (
 
     const decoded = jwt.verify(token, env.jwt.secret as string) as IPayload;
     
-    const user = await User.findById(decoded.sub).select("-password");
-    if (!user) throw new ApiError(status.BAD_REQUEST, "User not found.");
+    // const user = await User.findById(decoded.sub).select("-password");
+    // if (!user) throw new ApiError(status.BAD_REQUEST, "User not found.");
+    // req.user = user;
 
-    req.user = user;
+    req.auth = decoded;
     next();
   } catch (error) {
     errorResponse(
@@ -31,5 +31,3 @@ const authMiddleware = async (
     );
   }
 };
-
-export default authMiddleware;

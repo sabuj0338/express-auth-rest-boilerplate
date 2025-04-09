@@ -24,7 +24,7 @@ export interface ITokenDoc extends IToken, Document {}
 export interface ITokenModel extends Model<ITokenDoc> {}
 
 export interface IPayload extends JwtPayload {
-  sub: string;
+  sub: string; // hold user id
   iat: number;
   exp: number;
   type: string;
@@ -36,8 +36,10 @@ export interface TokenPayload {
 }
 
 export interface AccessAndRefreshTokens {
-  access: TokenPayload;
-  refresh: TokenPayload;
+  // access: TokenPayload;
+  // refresh: TokenPayload;
+  accessToken: string;
+  refreshToken: string;
 }
 
 const tokenSchema = new mongoose.Schema<ITokenDoc, ITokenModel>(

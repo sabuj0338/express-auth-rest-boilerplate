@@ -1,7 +1,7 @@
 import status from "http-status";
 import Otp, { otpType } from "../models/otp.model";
-import Token, { tokenType } from "../models/token.model";
-import { IUserDoc, IUserWithTokens } from "../models/user.model";
+import Token, { AccessAndRefreshTokens, tokenType } from "../models/token.model";
+import { IUserDoc } from "../models/user.model";
 import ApiError from "../utils/ApiError";
 import logger from "../utils/logger";
 import { verifyOTP } from "./otp.service";
@@ -34,7 +34,7 @@ export const logout = async (refreshToken: string): Promise<void> => {
 
 export const refreshAuth = async (
   refreshToken: string
-): Promise<IUserWithTokens> => {
+): Promise<AccessAndRefreshTokens> => {
   try {
     const refreshTokenDoc = await verifyToken(refreshToken, tokenType.REFRESH);
     const user = await getUserById(refreshTokenDoc.user);
@@ -46,7 +46,7 @@ export const refreshAuth = async (
     }
     await refreshTokenDoc.deleteOne();
     const tokens = await generateAuthTokens(user);
-    return { user, tokens };
+    return tokens;
   } catch (error) {
     throw new ApiError(status.BAD_REQUEST, (error as Error).message);
   }
