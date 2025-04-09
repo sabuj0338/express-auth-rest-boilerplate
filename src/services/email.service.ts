@@ -1,5 +1,6 @@
+import nodemailer from "nodemailer";
 import env from "../config/env";
-import { transport } from "../config/smtp";
+import logger from "../utils/logger";
 
 export interface Message {
   from: string;
@@ -9,20 +10,67 @@ export interface Message {
   html?: string;
 }
 
+/**
+ * Sends an email using the configured SMTP transport.
+ * It establishes a connection, sends the email, and closes the connection.
+ * If an error occurs during connection or sending, it logs the error
+ * and throws it to be handled by the caller.
+ *
+ * @param to Recipient email address.
+ * @param subject Email subject line.
+ * @param text Plain text body of the email.
+ * @param html HTML body of the email.
+ * @throws {Error} If connection to the email server fails or sending the email fails.
+ */
 export const sendEmail = async (
   to: string,
   subject: string,
   text: string,
   html: string
 ): Promise<void> => {
-  const msg: Message = {
-    from: env.email.from,
-    to,
-    subject,
-    text,
-    html,
-  };
-  await transport.sendMail(msg);
+  // Create a new transport object for each email attempt
+  // This ensures connections are managed per-send operation
+  const transport = nodemailer.createTransport(env.email.smtp);
+  let connectionVerified = false;
+
+  try {
+    // Verify the connection to the SMTP server
+    await transport.verify();
+    logger.info("Successfully connected to email server.");
+    connectionVerified = true; // Mark connection as verified
+
+    // Construct the email message
+    const msg: Message = {
+      from: env.email.from,
+      to,
+      subject,
+      text,
+      html,
+    };
+
+    // Send the email
+    await transport.sendMail(msg);
+    logger.info(`Email sent successfully to ${to}`);
+  } catch (error) {
+    // Log the specific error encountered
+    if (!connectionVerified) {
+      logger.error("Failed to connect to the email server:", error);
+    } else {
+      logger.error(`Failed to send email to ${to}:`, error);
+    }
+    // Re-throw the error to allow the caller to handle it
+    // This replaces process.exit(1)
+    throw new Error(
+      `Email service failed: ${(error as Error).message || error}`
+    );
+  } finally {
+    // Close the connection if it was successfully established,
+    // regardless of whether sending succeeded or failed afterwards.
+    if (connectionVerified) {
+      transport.close();
+      logger.info("SMTP connection closed.");
+    }
+  }
 };
 
 export const sendResetPasswordEmail = async (
