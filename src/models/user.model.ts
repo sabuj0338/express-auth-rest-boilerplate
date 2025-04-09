@@ -36,7 +36,7 @@ export interface IUser {
   isEmailVerified: boolean;
   lastLogin: Date;
   roles: Array<string>;
-  status: string; //['active', 'disabled', 'blocked']
+  status: boolean;
 }
 
 export interface IUserDoc extends IUser, Document {
@@ -127,6 +127,10 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       default: ["customer"],
     },
     isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
       type: Boolean,
       default: false,
     },
