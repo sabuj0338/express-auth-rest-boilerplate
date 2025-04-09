@@ -132,7 +132,11 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
